@@ -15,11 +15,12 @@ def welcome(message):
  
     # keyboard
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True,row_width=2)
-    item1 = types.KeyboardButton("Додати рекламодавця")
-    item2 = types.KeyboardButton("Додати клієнта")
-    item3 = types.KeyboardButton("Додати товар до клієнта")
-    item4 = types.KeyboardButton("Статистика")
-    markup.add(item1, item2, item3, item4)
+    item1 = types.KeyboardButton("Реклама")
+    item2 = types.KeyboardButton("Додати рекламодавця")
+    item3 = types.KeyboardButton("Додати клієнта")
+    item4 = types.KeyboardButton("Додати товар до клієнта")
+    item5 = types.KeyboardButton("Статистика")
+    markup.add(item1, item2, item3, item4, item5)
 
     bot.send_message(message.chat.id, "Добро пожаловать, {0.first_name}!".format(message.from_user, bot.get_me()),
         parse_mode='html', reply_markup=markup)
@@ -27,7 +28,13 @@ def welcome(message):
 @bot.message_handler(content_types=['text'])
 def lalala(message):
     if message.chat.type == 'private':
-        if message.text == 'Додати рекламодавця':
+        if message.text == 'Реклама':
+                markup = types.InlineKeyboardMarkup(row_width=2)
+                button1 = types.InlineKeyboardButton("Реклама спрацювала", callback_data='Yes')
+                button2 = types.InlineKeyboardButton("Реклама не спрацювала", callback_data='No') 
+                markup.add(button1, button2)
+                bot.send_message(message.chat.id, 'Чи спрацювала реклама?', reply_markup=markup)        
+        elif message.text == 'Додати рекламодавця':
             def ttt(message):
                 msg1 = bot.send_message(message.chat.id,"Введіть прізвище рекламодавця: ")
                 bot.register_next_step_handler(msg1, process_firstname_step_rekl)                                                                                                  
@@ -77,11 +84,11 @@ def lalala(message):
                 user.last_name = message.text
 
                 markup = types.InlineKeyboardMarkup(row_width=2)
-                button1 = types.InlineKeyboardButton("Перший", callback_data='first')
-                button2 = types.InlineKeyboardButton("Другий", callback_data='second') 
-                button3 = types.InlineKeyboardButton("Третій", callback_data='third')
-                button4 = types.InlineKeyboardButton("Четвертий", callback_data='fourth')
-                markup.add(button1, button2, button3, button4)
+                lutton1 = types.InlineKeyboardButton("Перший", callback_data='first')
+                lutton2 = types.InlineKeyboardButton("Другий", callback_data='second') 
+                lutton3 = types.InlineKeyboardButton("Третій", callback_data='third')
+                lutton4 = types.InlineKeyboardButton("Четвертий", callback_data='fourth')
+                markup.add(lutton1, lutton2, lutton3, lutton4)
                 bot.send_message(message.chat.id, 'Який товар купив клієнт?', reply_markup=markup)
             lll(message)
         else:
@@ -104,26 +111,23 @@ def callback_inline(call):
                 reply_markup=None)
 
     except Exception as e:
-        print(repr(e))                                                                                                                      
+        print(repr(e)) 
+    try:
+        if call.message:
+            if call.data == 'Yes':
+                bot.send_message(call.message.chat.id, 'Додано оплату за спрацьовану рекламу')
+            elif call.data == 'No':
+                bot.send_message(call.message.chat.id, 'Додано оплату за неспрацьовану рекламу')
+ 
+            # remove inline buttons
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Чи спрацювала реклама?",
+                reply_markup=None)
+
+    except Exception as e:
+        print(repr(e))                                                                                                                     
  
 # RUN
 bot.enable_save_next_step_handlers(delay=2)
 bot.load_next_step_handlers()
 if __name__ == '__main__':
     bot.polling(none_stop=True)
-
-
-
- # markup = types.ReplyKeyboardMarkup(resize_keyboard=True,row_width=2)
- #            back = types.KeyboardButton("Назад")
- #            markup.add(back)
- #            bot.send_message(message.chat.id, 'h', reply_markup=markup)
-
-         # elif message.text == 'Назад':
-         #    markup = types.ReplyKeyboardMarkup(resize_keyboard=True,row_width=2)
-         #    item1 = tsypes.KeyboardButton("Додати рекламодавця")
-         #    item2 = types.KeyboardButton("Додати клієнта")
-         #    item3 = types.KeyboardButton("Додати товар до клієнта")
-         #    item4 = types.KeyboardButton("Статистика")
-         #    markup.add(item1, item2, item3, item4)
-         #    bot.send_message(message.chat.id, 'Назад', reply_markup=markup)
